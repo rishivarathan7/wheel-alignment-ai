@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+  <rect width="100%" height="100%" fill="#12161f"/>
+  <circle cx="320" cy="220" r="60" fill="none" stroke="#30363d" stroke-width="4" stroke-dasharray="10 5"/>
+  <circle cx="320" cy="220" r="30" fill="none" stroke="#00adb5" stroke-width="3"/>
+  <text x="320" y="320" font-family="'Segoe UI', Inter, sans-serif" font-size="16" font-weight="600" fill="#8b949e" text-anchor="middle">VIDEO STREAM IDLE</text>
+  <text x="320" y="345" font-family="'Segoe UI', Inter, sans-serif" font-size="13" fill="#484f58" text-anchor="middle">Click "Start Monitor" to launch real-time AI wheel alignment pipeline</text>
+</svg>

@@ -1,0 +1,70 @@
+# Configuration Settings for Wheel Alignment Monitoring AI System
+
+app:
+  name: "AI Wheel Alignment Monitor"
+  version: "1.0.0"
+  debug: true
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_to_file: true
+  log_file: "logs/app.log"
+
+video:
+  source: 0 # Default camera index or path to video file (e.g., 'videos/sample.mp4')
+  frame_width: 1280
+  frame_height: 720
+  fps: 30
+  buffer_size: 10
+
+preprocessing:
+  target_width: 640
+  target_height: 640
+  normalize: true
+  color_space: "BGR2RGB"
+
+detection:
+  model_type: "yolo" # 'yolo' or 'custom'
+  model_path: "models/yolov8n.pt" # Path to model weights
+  confidence_threshold: 0.5
+  iou_threshold: 0.45
+  wheel_class_id: 0 # Target class index for wheel detection
+
+tracking:
+  max_disappeared: 10
+  distance_threshold: 50.0
+
+feature_extraction:
+  enable_aspect_ratio: true
+  enable_contour_analysis: true
+  enable_angle_estimation: true
+
+prediction:
+  model_path: "models/alignment_classifier.joblib"
+  threshold_normal: 0.8
+  camber_angle_limit: 3.0 # Degrees
+  toe_angle_limit: 2.0 # Degrees
+
+alert:
+  enable_visual_alerts: true
+  enable_audio_alerts: false
+  cooldown_seconds: 5
+  alert_log_path: "logs/alerts.log"
+
+training:
+  base_model: "models/yolov8n.pt"
+  dataset_config: "data/dataset.yaml"
+  epochs: 50
+  batch_size: 16
+  imgsz: 640
+  learning_rate: 0.01
+  workers: 4
+  patience: 10
+  save_period: 5
+  output_dir: "results/train"
+  best_model_dest: "models/wheel_yolo_custom.pt"
+  split_ratios:
+    train: 0.7
+    val: 0.2
+    test: 0.1

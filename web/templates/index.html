@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Wheel Alignment Monitoring System - Web Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Main Dashboard Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 1. Header Navigation & Control Toolbar -->
+        <header class="navbar">
+            <div class="brand">
+                <span class="logo-icon">🚗</span>
+                <div class="brand-text">
+                    <h1>AI Wheel Alignment Monitor</h1>
+                    <span class="badge-web">Web Edition</span>
+                </div>
+            </div>
+
+            <div class="controls-toolbar">
+                <div class="input-group">
+                    <label for="videoSourceSelect">Source:</label>
+                    <select id="videoSourceSelect" class="form-select">
+                        <option value="0">Camera 0 (Default)</option>
+                        <option value="1">Camera 1</option>
+                        <option value="2">Camera 2</option>
+                        <option value="custom">📁 Custom Video File...</option>
+                    </select>
+                </div>
+
+                <div id="customSourceInputGroup" class="input-group hidden">
+                    <input type="text" id="customVideoPath" class="form-input" placeholder="e.g. videos/sample_car.mp4">
+                </div>
+
+                <button id="btnStart" class="btn btn-success">
+                    <span class="btn-icon">▶</span> Start Monitor
+                </button>
+                <button id="btnStop" class="btn btn-danger" disabled>
+                    <span class="btn-icon">⏹</span> Stop Monitor
+                </button>
+                <button id="btnSettings" class="btn btn-secondary">
+                    <span class="btn-icon">⚙️</span> Settings
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. Main Content Dashboard Split View -->
+        <main class="dashboard-grid">
+            <!-- LEFT PANEL: Video Stream & Performance HUD -->
+            <section class="card video-card">
+                <div class="card-header">
+                    <h2><span class="status-indicator" id="streamStatusDot"></span> Live Video Analytics Stream</h2>
+                    <span class="stream-info" id="streamResolution">Source: Idle</span>
+                </div>
+                
+                <div class="video-container">
+                    <img id="videoFeed" src="/static/images/placeholder.svg" alt="Live Video Feed" class="video-stream">
+                    <div id="videoOverlay" class="video-overlay hidden">
+                        <div class="spinner"></div>
+                        <p id="overlayMessage">Connecting to video pipeline...</p>
+                    </div>
+                </div>
+
+                <!-- Sub-Video Performance HUD Bar -->
+                <div class="hud-bar">
+                    <div class="hud-item primary">
+                        <span class="hud-label">FPS</span>
+                        <span class="hud-value" id="hudFps">0.0</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">LATENCY</span>
+                        <span class="hud-value" id="hudLatency">0.0 ms</span>
+                    </div>
+                    <div class="hud-item muted">
+                        <span class="hud-label">DET</span>
+                        <span class="hud-value" id="hudDetLat">0.0 ms</span>
+                    </div>
+                    <div class="hud-item muted">
+                        <span class="hud-label">ML</span>
+                        <span class="hud-value" id="hudMlLat">0.0 ms</span>
+                    </div>
+                    <div class="hud-item right">
+                        <span class="hud-label">MODEL</span>
+                        <span class="hud-value badge-status" id="hudModelStatus">Active</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Alert Status, Active Telemetry Table, Event Log -->
+            <section class="side-panel">
+                <!-- A. System Alignment Status Box -->
+                <div class="card alert-card">
+                    <div class="card-header">
+                        <h2>System Alignment Status</h2>
+                    </div>
+                    <div class="alert-body">
+                        <div class="status-banner status-idle" id="statusBanner">
+                            <span class="status-title" id="statusTitle">IDLE</span>
+                        </div>
+                        <p class="warning-text" id="warningText">System ready for real-time monitoring stream.</p>
+                        <div class="disclaimer-box">
+                            <span class="disclaimer-icon">⚠️</span>
+                            <span class="disclaimer-text">NOTICE: Visual screening proxy only. Not a certified mechanical automotive diagnosis.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B. Active Wheels Telemetry Table -->
+                <div class="card telemetry-card">
+                    <div class="card-header">
+                        <h2>Active Wheels Telemetry</h2>
+                        <span class="active-count" id="activeTrackCount">0 Wheels Detected</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="telemetry-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Conf</th>
+                                    <th>Camber</th>
+                                    <th>Toe</th>
+                                    <th>Speed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="telemetryTableBody">
+                                <tr class="empty-row">
+                                    <td colspan="6">No active wheels currently tracked</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- C. Real-Time System Event Log Console -->
+                <div class="card log-card">
+                    <div class="card-header">
+                        <h2>System Event Log</h2>
+                        <button id="btnClearLog" class="btn-text">Clear Log</button>
+                    </div>
+                    <div class="console-box" id="eventLogConsole">
+                        <div class="log-entry info">[00:00:00] Web Monitoring Dashboard initialized.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 3. Pipeline Configuration Settings Modal -->
+    <div id="settingsModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>⚙️ Pipeline Configuration Settings</h3>
+                <button id="btnCloseSettings" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="cfgCameraSelect">Camera / Video Source:</label>
+                        <select id="cfgCameraSelect" class="form-select">
+                            <option value="0">Camera 0 (Default Laptop Camera)</option>
+                            <option value="1">Camera 1</option>
+                            <option value="2">Camera 2</option>
+                            <option value="custom">📁 Custom Video File Path...</option>
+                        </select>
+                    </div>
+
+                    <div id="cfgCustomSourceGroup" class="form-group hidden">
+                        <label for="cfgCustomSource">Custom Video File Path:</label>
+                        <input type="text" id="cfgCustomSource" class="form-input" placeholder="e.g. videos/sample_car.mp4">
+                    </div>
+
+                    <div class="form-row" style="display: flex; gap: 12px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cfgCamberLimit">Camber Angle Limit (°):</label>
+                            <input type="number" id="cfgCamberLimit" class="form-input" min="0.5" max="15.0" step="0.5" value="3.0">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cfgToeLimit">Toe Angle Limit (°):</label>
+                            <input type="number" id="cfgToeLimit" class="form-input" min="0.5" max="10.0" step="0.5" value="2.0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfgDetConf">Detection Confidence Threshold: <span id="valDetConf">0.50</span></label>
+                        <input type="range" id="cfgDetConf" min="0.1" max="0.9" step="0.05" value="0.50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cfgPredConf">Min Prediction Confidence: <span id="valPredConf">0.60</span></label>
+                        <input type="range" id="cfgPredConf" min="0.3" max="0.95" step="0.05" value="0.60">
+                    </div>
+
+                    <div class="form-row" style="display: flex; gap: 12px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cfgConsecutive">Consecutive Alert Threshold:</label>
+                            <input type="number" id="cfgConsecutive" class="form-input" min="1" max="20" value="3">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cfgCooldown">Alert Cooldown (sec):</label>
+                            <input type="number" id="cfgCooldown" class="form-input" min="0.5" max="60.0" step="0.5" value="3.0">
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="cfgEnableAudio"> Enable Audio Alerts
+                        </label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="cfgDebugMode"> Enable Visual Debug HUD Overlays
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btnSaveSettings" class="btn btn-primary">💾 Save Settings</button>
+                <button id="btnCancelSettings" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Controller JS -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

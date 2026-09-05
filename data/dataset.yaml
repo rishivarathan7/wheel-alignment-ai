@@ -1,0 +1,16 @@
+# YOLO Dataset Configuration for Custom Wheel/Tyre Detector
+
+# Dataset root directory relative to training script or absolute path
+path: data
+
+# Sub-directories for dataset splits containing images
+train: train/images
+val: validation/images
+test: test/images
+
+# Number of classes
+nc: 1
+
+# Class names dictionary or list
+names:
+  0: wheel
