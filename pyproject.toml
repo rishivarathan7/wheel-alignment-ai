@@ -1,2 +1,0 @@
-[tool.vercel]
-entrypoint = "src/web_app.py:app"
