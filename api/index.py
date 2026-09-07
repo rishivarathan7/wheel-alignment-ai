@@ -5,7 +5,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.get("/")
+
+@app.get("/api")
 def home():
     return {
         "message": "AI Wheel Alignment Monitoring System",
@@ -13,7 +14,8 @@ def home():
         "platform": "Vercel"
     }
 
-@app.get("/health")
+
+@app.get("/api/health")
 def health():
     return {
         "status": "healthy"
