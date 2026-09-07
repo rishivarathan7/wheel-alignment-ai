@@ -39,3 +39,12 @@ videos/
 
 # Jupyter
 .ipynb_checkpoints/
+# Python virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
